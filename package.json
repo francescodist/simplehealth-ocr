@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/francescodist/simplehealth-ocr/issues"
   },
-  "homepage": "https://github.com/francescodist/simplehealth-ocr#readme"
+  "homepage": "https://github.com/francescodist/simplehealth-ocr#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
