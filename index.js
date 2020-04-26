@@ -5,7 +5,9 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser());
+app.use(bodyParser({
+    limit: '50mb'
+}));
 const { createWorker } = require('tesseract.js');
 
 const worker = createWorker({
