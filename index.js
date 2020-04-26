@@ -8,16 +8,28 @@ app.use(cors());
 app.use(bodyParser({
     limit: '50mb'
 }));
-const { createWorker } = require('tesseract.js');
+const { createWorker, createScheduler } = require('tesseract.js');
 
 const worker = createWorker({
-    logger: m => console.log(m)
+    logger: m => console.log("Worker 1", m)
 });
+
+const worker2 = createWorker({
+    logger: m => console.log("Worker 2", m)
+});
+
+let scheduler;
 
 (async () => {
     await worker.load();
     await worker.loadLanguage('ita');
     await worker.initialize('ita');
+    await worker2.load();
+    await worker2.loadLanguage('ita');
+    await worker2.initialize('ita');
+    scheduler = createScheduler();
+    scheduler.addWorker(worker);
+    scheduler.addWorker(worker2);
     // await worker.terminate();
 })();
 
@@ -28,11 +40,17 @@ app.get('/', async (req, res) => {
 })
 
 app.post('/ocr', async (req, res) => {
-    console.log(req.body)
-    const { image } = req.body;
-    const { data: { text } } = await worker.recognize(image);
-    console.log(text);
-    res.send(text);
+    try {
+        const { image } = req.body;
+        console.log(image);
+        const { data: { text } } = await scheduler.addJob('recognize', image);
+        console.log(text);
+        res.send(text);
+    } catch (e) {
+        console.log(e)
+        res.send(e);
+    }
+
 })
 
 app.listen(PORT);
