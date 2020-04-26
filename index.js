@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.bodyParser());
-app.use(app.router);
+app.use(bodyParser());
 const { createWorker } = require('tesseract.js');
 
 const worker = createWorker({
